@@ -9,12 +9,15 @@
 
 .header {
   background-color: #222;
-  height: 36px;
   color: white;
   width: 100%;
   overflow: hidden;
   position: fixed;
   top: 0;
+  padding: 8px;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: bold;
+  letter-spacing: 2px;
 }
 
 .App-intro {
@@ -45,6 +48,7 @@
 #content {
     width: 100%;
     background: #DDDDDD;
-    padding: 5px;
+    outline: 0px solid transparent;
+    padding: 15px;
     margin: 0;
 }

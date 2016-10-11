@@ -75,7 +75,7 @@ class App extends Component {
       <div className="App">
         <div id="container">
           <div className="header">
-            <img src={logo} className="App-logo" alt="logo" />
+            ZİYA
           </div>
           <div id="sidebar">
             {
