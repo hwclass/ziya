@@ -1,4 +1,4 @@
 # ziya
 Your local in-browser editor
 
-![Şener Şen](http://tinypic.com/r/e3gqe/9)
+![Şener Şen](http://i68.tinypic.com/e3gqe.jpg)
