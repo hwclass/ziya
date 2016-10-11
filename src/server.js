@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 var express = require('express'),
 	app = express(),
-	chokidar = require('chokidar'),
 	fs = require('fs'),
 	cors = require('cors'),
 	path = require('path');
@@ -18,19 +17,6 @@ fs.readdir('./', function(err, items) {
 });
 
 let files = [];
-
-// One-liner for current directory, ignores .dotfiles 
-var watcher = chokidar.watch('file, dir, glob, or array', {
-  ignored: /[\/\\]\./,
-  persistent: true
-});
-
-var log = console.log.bind(console);
-
-watcher
-  .on('add', path => log(`File ${path} has been added`))
-  .on('change', path => log(`File ${path} has been changed`))
-  .on('unlink', path => log(`File ${path} has been removed`));
 
 app.all('*', function(req, res,next) {
   /**
