@@ -3,7 +3,7 @@ import './File.css';
 
 const File = ({ name, onClick }) => {
 	return(
-		<p onClick={onClick}>{name}</p>
+		<p className="item" onClick={onClick}>{name}</p>
 	)
 };
 

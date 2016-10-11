@@ -1,3 +1,8 @@
-p:hover {
-	cursor: pointer;  
+p.item {padding: 6px;}
+
+p.item:hover {
+	cursor: pointer;
+	background: #444;
+	color: #FFF;
+	padding: 6px;
 }
