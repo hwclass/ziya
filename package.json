@@ -1,6 +1,6 @@
 {
   "name": "ziya",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Your local in-browser editor",
   "main": "index.js",
   "scripts": {
@@ -9,6 +9,6 @@
   "author": "",
   "license": "MIT",
   "bin": {
-    "ziya": "node src/server.js & npm start"
+    "ziya": "node ./src/server.js & npm start"
 	}
 }
