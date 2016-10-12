@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import uuid from 'uuid';
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
 import { File } from './File';
 
@@ -10,6 +10,7 @@ class App extends Component {
     super();
     this.state = {
       files: [],
+      selectedName: '',
       content: ''
     };
     this.handleFileClick = this.handleFileClick.bind(this);
@@ -47,6 +48,9 @@ class App extends Component {
   handleFileClick(e) {
     let self = this;
     console.log(e.target.textContent);
+    this.setState({
+      selectedName: e.target.textContent
+    });
     fetch('http://localhost:5000/content/' + encodeURIComponent(e.target.textContent), {
       method: 'GET', headers: {
         'Access-Control-Allow-Origin': '*',
@@ -62,7 +66,6 @@ class App extends Component {
         if (!done) {
           console.log(result);
           var u8 = new Uint8Array(result.value);
-          var b64encoded = btoa(self.Uint8ToString(u8));
           self.setState({
             content: self.Uint8ToString(u8)
           });
@@ -80,7 +83,12 @@ class App extends Component {
           <div id="sidebar">
             {
               this.state.files.map((item) => {
-                return <File key={uuid.v1()} name={item.name} onClick={this.handleFileClick} />
+                return <File 
+                        key={uuid.v1()}
+                        name={item.name}
+                        className={this.state.selectedName == item.name?'selected':''}
+                        onClick={this.handleFileClick}
+                       />
               })
             }
           </div>
