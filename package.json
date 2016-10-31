@@ -10,6 +10,7 @@
   "license": "MIT",
   "bin": {
     "ziya": "./src/server.js"
-	},
-  "preferGlobal": "true"
+  },
+  "preferGlobal": "true",
+  "dependencies": {}
 }

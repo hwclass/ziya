@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import Codemirror from 'react-codemirror';
 import uuid from 'uuid';
 // import logo from './logo.svg';
 import './App.css';
+// import '../node_modules/codemirror/lib/codemirror.css'
 import { File } from './File';
 
 class App extends Component {
@@ -14,6 +16,7 @@ class App extends Component {
       content: ''
     };
     this.handleFileClick = this.handleFileClick.bind(this);
+    this.updateCode = this.updateCode.bind(this);
   }
 
   componentDidMount() {
@@ -73,7 +76,16 @@ class App extends Component {
       });
   }
 
+  updateCode(newCode) {
+    this.setState({
+      content: newCode
+    });
+  }
+
   render() {
+    var options = {
+      /*lineNumbers: true*/
+    };
     return (
       <div className="App">
         <div id="container">
@@ -92,7 +104,9 @@ class App extends Component {
               })
             }
           </div>
-          <p id="content" contentEditable="true">{this.state.content}</p>
+          <div id="content" className={this.state.content ? '' : 'hidden'}>
+            <Codemirror value={this.state.content} onChange={this.updateCode} options={options}/>
+          </div>
         </div>
       </div>
     );
