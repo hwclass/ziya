@@ -89,11 +89,11 @@ class App extends Component {
 
     return (
       <div className="App">
-        <div id="container">
-          <div className="header">
+        <div id="Container">
+          <div className="Header">
             ZİYA
           </div>
-          <div id="sidebar">
+          <div id="Sidebar">
             {
               this.state.files.map((item) => (
                 <File
@@ -105,7 +105,7 @@ class App extends Component {
               ))
             }
           </div>
-          <div id="content" className={this.state.content ? '' : 'hidden'}>
+          <div id="Content" className={this.state.content ? '' : 'hidden'}>
             <Codemirror
               className="Editor"
               value={this.state.content}
