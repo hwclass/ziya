@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import Codemirror from 'react-codemirror';
 import uuid from 'uuid';
-// import logo from './logo.svg';
-import './App.css';
-// import '../node_modules/codemirror/lib/codemirror.css'
+import Codemirror from 'react-codemirror';
 import { File } from './File';
+
+import 'codemirror/lib/codemirror.css'
+import './App.css';
 
 class App extends Component {
 
@@ -27,7 +27,7 @@ class App extends Component {
           self.setState({
             files: []
           });
-          self.setState({ 
+          self.setState({
             files: JSON.parse(e.data)
           })
         }, false)
@@ -84,8 +84,9 @@ class App extends Component {
 
   render() {
     var options = {
-      /*lineNumbers: true*/
+      lineNumbers: true
     };
+
     return (
       <div className="App">
         <div id="container">
@@ -94,18 +95,23 @@ class App extends Component {
           </div>
           <div id="sidebar">
             {
-              this.state.files.map((item) => {
-                return <File 
-                        key={uuid.v1()}
-                        name={item.name}
-                        className={this.state.selectedName == item.name?'selected':''}
-                        onClick={this.handleFileClick}
-                       />
-              })
+              this.state.files.map((item) => (
+                <File
+                  key={uuid.v1()}
+                  name={item.name}
+                  className={this.state.selectedName === item.name ? 'selected' : ''}
+                  onClick={this.handleFileClick}
+                 />
+              ))
             }
           </div>
           <div id="content" className={this.state.content ? '' : 'hidden'}>
-            <Codemirror value={this.state.content} onChange={this.updateCode} options={options}/>
+            <Codemirror
+              className="Editor"
+              value={this.state.content}
+              onChange={this.updateCode}
+              options={options}
+            />
           </div>
         </div>
       </div>

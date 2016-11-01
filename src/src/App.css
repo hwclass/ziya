@@ -24,17 +24,24 @@
   font-size: large;
 }
 
+.Editor .CodeMirror {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
 
 #container {
-    display: flex; 
+    display: flex;
     flex-direction: row;
     top: 36px;
     position: relative;
 }
+
 #sidebar {
     position: fixed;
     width: 300px;
@@ -47,6 +54,7 @@
     padding-left: 10px;
     max-width: 300px;
 }
+
 #content {
     height: 100%;
     left: 300px;
@@ -55,9 +63,10 @@
     position: fixed;
     background: #DDDDDD;
     outline: 0px solid transparent;
-    padding-left: 10px;
     border: 1px solid #ccc;
+    width: 100%;
 }
+
 .hidden {
   display: none;
 }
