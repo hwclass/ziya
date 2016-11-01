@@ -86,22 +86,23 @@ class App extends Component {
   }
 
   getExtension(fileName) {
-    return fileName.split('.')[1];
+    const splittedName = fileName.split('.');
+    return splittedName[splittedName.length - 1];
   }
 
   getFileType(extension) {
     return this.state.fileTypes[extension];
   }
 
-  buildEditorOptions(lineNumbers, fileType) {
+  buildEditorOptions(mode, lineNumbers = true) {
     return {
-      lineNumbers: lineNumbers,
-      mode: fileType
+      mode: mode,
+      lineNumbers: lineNumbers
     }
   }
 
   render() {
-    let editorOptions = this.buildEditorOptions(true, this.getFileType(this.getExtension(this.state.selectedName)));
+    let editorOptions = this.buildEditorOptions(this.getFileType(this.getExtension(this.state.selectedName)));
     return (
       <div className="App">
         <div id="Container">
