@@ -6,6 +6,8 @@ import { File } from './File';
 import 'codemirror/lib/codemirror.css'
 import './App.css';
 
+import 'codemirror/mode/javascript/javascript';
+
 class App extends Component {
 
   constructor() {
@@ -13,7 +15,10 @@ class App extends Component {
     this.state = {
       files: [],
       selectedName: '',
-      content: ''
+      content: '',
+      fileTypes: {
+        js: 'javascript'
+      }
     };
     this.handleFileClick = this.handleFileClick.bind(this);
     this.updateCode = this.updateCode.bind(this);
@@ -23,7 +28,7 @@ class App extends Component {
     let self = this;
       if (!!window.EventSource) {
         var source = new EventSource('http://localhost:5000/sse/')
-        source.addEventListener('message', function(e) {
+        source.addEventListener('message', (e) => {
           self.setState({
             files: []
           });
@@ -31,7 +36,7 @@ class App extends Component {
             files: JSON.parse(e.data)
           })
         }, false)
-        source.addEventListener('error', function(e) {
+        source.addEventListener('error', (e) => {
           if (e.readyState === EventSource.CLOSED) {
             console.log("Ziya was closed")
           }
@@ -50,7 +55,6 @@ class App extends Component {
 
   handleFileClick(e) {
     let self = this;
-    console.log(e.target.textContent);
     this.setState({
       selectedName: e.target.textContent
     });
@@ -62,12 +66,11 @@ class App extends Component {
         'Content-Type': 'application/json'
       },
       mode: 'cors'
-    }).then(function(response) {
+    }).then((response) => {
         var reader = response.body.getReader();
         return reader.read();
-      }).then(function(result, done) {
+      }).then((result, done) => {
         if (!done) {
-          console.log(result);
           var u8 = new Uint8Array(result.value);
           self.setState({
             content: self.Uint8ToString(u8)
@@ -82,11 +85,24 @@ class App extends Component {
     });
   }
 
-  render() {
-    var options = {
-      lineNumbers: true
-    };
+  getExtension(fileName) {
+    const splittedName = fileName.split('.');
+    return splittedName[splittedName.length - 1];
+  }
 
+  getFileType(extension) {
+    return this.state.fileTypes[extension];
+  }
+
+  buildEditorOptions(mode, lineNumbers = true) {
+    return {
+      mode: mode,
+      lineNumbers: lineNumbers
+    }
+  }
+
+  render() {
+    let editorOptions = this.buildEditorOptions(this.getFileType(this.getExtension(this.state.selectedName)));
     return (
       <div className="App">
         <div id="Container">
@@ -110,7 +126,7 @@ class App extends Component {
               className="Editor"
               value={this.state.content}
               onChange={this.updateCode}
-              options={options}
+              options={editorOptions}
             />
           </div>
         </div>
