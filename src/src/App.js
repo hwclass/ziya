@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import uuid from 'uuid';
-// import logo from './logo.svg';
-import './App.css';
+import Codemirror from 'react-codemirror';
 import { File } from './File';
+
+import 'codemirror/lib/codemirror.css'
+import './App.css';
 
 class App extends Component {
 
@@ -14,6 +16,7 @@ class App extends Component {
       content: ''
     };
     this.handleFileClick = this.handleFileClick.bind(this);
+    this.updateCode = this.updateCode.bind(this);
   }
 
   componentDidMount() {
@@ -24,7 +27,7 @@ class App extends Component {
           self.setState({
             files: []
           });
-          self.setState({ 
+          self.setState({
             files: JSON.parse(e.data)
           })
         }, false)
@@ -73,26 +76,43 @@ class App extends Component {
       });
   }
 
+  updateCode(newCode) {
+    this.setState({
+      content: newCode
+    });
+  }
+
   render() {
+    var options = {
+      lineNumbers: true
+    };
+
     return (
       <div className="App">
-        <div id="container">
-          <div className="header">
+        <div id="Container">
+          <div className="Header">
             ZİYA
           </div>
-          <div id="sidebar">
+          <div id="Sidebar">
             {
-              this.state.files.map((item) => {
-                return <File 
-                        key={uuid.v1()}
-                        name={item.name}
-                        className={this.state.selectedName == item.name?'selected':''}
-                        onClick={this.handleFileClick}
-                       />
-              })
+              this.state.files.map((item) => (
+                <File
+                  key={uuid.v1()}
+                  name={item.name}
+                  className={this.state.selectedName === item.name ? 'selected' : ''}
+                  onClick={this.handleFileClick}
+                 />
+              ))
             }
           </div>
-          <p id="content" contentEditable="true">{this.state.content}</p>
+          <div id="Content" className={this.state.content ? '' : 'hidden'}>
+            <Codemirror
+              className="Editor"
+              value={this.state.content}
+              onChange={this.updateCode}
+              options={options}
+            />
+          </div>
         </div>
       </div>
     );

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 var express = require('express'),
 	app = express(),
 	fs = require('fs'),
@@ -43,8 +44,6 @@ app.all('*', function(req, res,next) {
   } else {
       next();
   }
-
-
 });
 
 app.get('/sse', function(req, res) {
@@ -60,7 +59,6 @@ app.get('/sse', function(req, res) {
 });
 
 app.get('/content/:fileName', function (req, res, next) {
-	console.dir(req.params.fileName);
 	var filePath = path.join(__dirname, req.params.fileName);
 	var stat = fs.statSync(filePath);
 	res.writeHead(200, {
