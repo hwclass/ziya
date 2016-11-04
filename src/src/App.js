@@ -6,12 +6,10 @@ import uuid from 'uuid';
 import getFileContent from './utils/getFileContent';
 
 // UI
-import Codemirror from 'react-codemirror';
-import { File } from './File';
-import 'codemirror/lib/codemirror.css'
 import './App.css';
-import 'codemirror/mode/javascript/javascript';
-
+import { File } from './File';
+import Codemirror from 'react-codemirror';
+import 'codemirror/lib/codemirror.css'
 import 'codemirror/mode/javascript/javascript';
 
 class App extends Component {
