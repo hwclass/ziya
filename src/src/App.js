@@ -4,6 +4,8 @@ import React, { Component } from 'react';
 // Helpers
 import uuid from 'uuid';
 import getFileContent from './utils/getFileContent';
+import getKeyCode from './utils/getKeyCode';
+import overrideKeyDownEvent from './utils/overrideKeyDownEvent';
 
 // UI
 import './App.css';
@@ -25,6 +27,7 @@ class App extends Component {
     };
     this.handleFileClick = this.handleFileClick.bind(this);
     this.updateCode = this.updateCode.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
   componentDidMount() {
@@ -37,7 +40,7 @@ class App extends Component {
           });
           self.setState({
             files: JSON.parse(e.data)
-          })
+          });
         }, false)
         source.addEventListener('error', (e) => {
           if (e.readyState === EventSource.CLOSED) {
@@ -45,6 +48,7 @@ class App extends Component {
           }
         }, false)
       }
+      overrideKeyDownEvent();
   }
 
   async handleFileClick(e) {
@@ -65,6 +69,28 @@ class App extends Component {
     this.setState({
       content: newCode
     });
+  }
+
+  handleKeyDown(event) {
+    let charCode = getKeyCode(event),
+        self = this;
+    if (event.metaKey && charCode === 's' && (navigator.platform.match("Mac") ? event.metaKey : event.ctrlKey)) {
+      fetch('http://localhost:5000/content', {
+        method: 'POST',
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type,x-requested-with,Authorization,Access-Control-Allow-Origin',
+          'Access-Control-Allow-Credentials': 'true',
+          'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE',
+          'Content-Type': 'application/json'
+        },
+        mode: 'cors',
+        body: JSON.stringify({
+          name: self.state.selectedName,
+          content: self.state.content
+        })
+      });
+    }
   }
 
   getExtension(fileName) {
@@ -105,7 +131,7 @@ class App extends Component {
             }
           </div>
 
-          <div id="Content" className={this.state.content ? '' : 'hidden'}>
+          <div id="Content" className={this.state.content ? '' : 'hidden'} onKeyDown={this.handleKeyDown}>
             <Codemirror
               className="Editor"
               value={this.state.content}
