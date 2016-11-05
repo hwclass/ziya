@@ -34,7 +34,8 @@ class Sidebar extends Component {
 
   onToggle(node, toggled) {
     if (this.state.cursor) {
-      this.state.cursor.active = false;
+      const cursor = Object.assign(this.state.cursor, { active: false });
+      this.setState({ cursor });
     }
 
     node.active = true;
@@ -53,7 +54,7 @@ class Sidebar extends Component {
   formatItemList(items) {
     const children = items.map(item => ({
       name: item.name,
-      children: item.type === 'directory' && [],
+      children: item.type === 'directory' && [{ name: 'hi! look at to console :)' }],
       type: item.type,
     }));
 

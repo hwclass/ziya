@@ -1,7 +1,7 @@
 import config from '../constants/config';
 import Uint8ToString from './Uint8ToString';
 
-async function getFileContent(name, type) {
+async function getFileContent(name) {
   const encodedName = encodeURIComponent(name);
 
   const requestOptions = {
