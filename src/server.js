@@ -44,7 +44,7 @@ app.all('*', function(req, res,next) {
 
 app.get('/sse', function(req, res) {
   let files = [];
-  fs.readdir('./', function(err, items) {
+  fs.readdir(process.cwd(), function(err, items) {
     for (var fileIndex=0; fileIndex<items.length; fileIndex++) {
       files.push({name: items[fileIndex]});
     }
