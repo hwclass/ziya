@@ -1,0 +1,19 @@
+#Sidebar {
+    position: fixed;
+    width: 300px;
+    top: 38px;
+    background: #EDEDED;
+    font-size: 100%;
+    height: 100%;
+    line-height: 0.9;
+    overflow-y: scroll;
+    max-width: 300px;
+}
+
+#Sidebar p {
+  padding-left: 10px;
+}
+
+#Sidebar ul {
+  height: 100%;
+}
