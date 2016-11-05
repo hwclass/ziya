@@ -1,15 +1,18 @@
+// Core
 import React, { Component } from 'react';
+
+// Helpers
 import uuid from 'uuid';
-import Codemirror from 'react-codemirror';
-import { File } from './File';
+import getFileContent from './utils/getFileContent';
 
-import 'codemirror/lib/codemirror.css'
+// UI
 import './App.css';
-
+import { File } from './File';
+import Codemirror from 'react-codemirror';
+import 'codemirror/lib/codemirror.css'
 import 'codemirror/mode/javascript/javascript';
 
 class App extends Component {
-
   constructor() {
     super();
     this.state = {
@@ -44,39 +47,18 @@ class App extends Component {
       }
   }
 
-  Uint8ToString(u8a) {
-    var CHUNK_SZ = 0x8000;
-    var c = [];
-    for (var i=0; i < u8a.length; i+=CHUNK_SZ) {
-      c.push(String.fromCharCode.apply(null, u8a.subarray(i, i+CHUNK_SZ)));
-    }
-    return c.join("");
-  }
+  async handleFileClick(e) {
+    const fileName = e.target.textContent;
 
-  handleFileClick(e) {
-    let self = this;
-    this.setState({
-      selectedName: e.target.textContent
-    });
-    fetch('http://localhost:5000/content/' + encodeURIComponent(e.target.textContent), {
-      method: 'GET', headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type,x-requested-with,Authorization,Access-Control-Allow-Origin',
-        'Access-Control-Allow-Credentials': 'true',
-        'Content-Type': 'application/json'
-      },
-      mode: 'cors'
-    }).then((response) => {
-        var reader = response.body.getReader();
-        return reader.read();
-      }).then((result, done) => {
-        if (!done) {
-          var u8 = new Uint8Array(result.value);
-          self.setState({
-            content: self.Uint8ToString(u8)
-          });
-        }
+    try {
+      const fileContent = await getFileContent(fileName);
+      this.setState({
+        selectedName: fileName,
+        content: fileContent
       });
+    } catch (error) {
+      console.error('error', error);
+    }
   }
 
   updateCode(newCode) {
@@ -109,6 +91,7 @@ class App extends Component {
           <div className="Header">
             ZİYA
           </div>
+
           <div id="Sidebar">
             {
               this.state.files.map((item) => (
@@ -121,6 +104,7 @@ class App extends Component {
               ))
             }
           </div>
+
           <div id="Content" className={this.state.content ? '' : 'hidden'}>
             <Codemirror
               className="Editor"
