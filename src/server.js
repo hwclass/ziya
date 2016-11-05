@@ -3,21 +3,17 @@
 var express = require('express'),
 	app = express(),
 	fs = require('fs'),
+  bodyParser = require('body-parser'),
 	cors = require('cors'),
 	path = require('path');
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 var corsOptions = {
 	origin: 'http://localhost:5000',
 	optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204 
 };
-
-fs.readdir('./', function(err, items) {
-	for (var idx=0; idx<items.length; idx++) {
-	    files.push({name: items[idx]});
-	}
-});
-
-let files = [];
 
 app.all('*', function(req, res,next) {
   /**
@@ -47,15 +43,21 @@ app.all('*', function(req, res,next) {
 });
 
 app.get('/sse', function(req, res) {
-  res.writeHead(200, {
-    'Content-Type': 'text/event-stream',
-    'Cache-Control': 'no-cache',
-    'Connection': 'keep-alive',
-    'Access-Control-Allow-Origin': '*'
+  let files = [];
+  fs.readdir('./', function(err, items) {
+    for (var fileIndex=0; fileIndex<items.length; fileIndex++) {
+      files.push({name: items[fileIndex]});
+    }
+    res.writeHead(200, {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
+      'Access-Control-Allow-Origin': '*'
+    });
+    res.write("data: " + JSON.stringify(files) + "\n\n");
+    res.write('id: ' + Date.now() + '\n');
+    res.end();
   });
-  res.write("data: " + JSON.stringify(files) + "\n\n");
-  res.write('id: ' + Date.now() + '\n');
-  res.end();
 });
 
 app.get('/content/:fileName', function (req, res, next) {
@@ -65,7 +67,19 @@ app.get('/content/:fileName', function (req, res, next) {
 	  "Content-Type": "application/octet-stream",
 	  "Content-Disposition" : "attachment; filename=" + req.params.fileName});
 	fs.createReadStream(filePath).pipe(res);
-})
+});
+
+app.post('/content', function (req, res, next) {
+  var filePath = path.join(__dirname, req.body.name);
+  fs.writeFile(filePath, req.body.content, {encoding: 'utf8'}, function(err) {
+    if(err) console.log(err);
+    console.log("The file was saved: " + filePath);
+  }); 
+  res.json({
+    status: 'OK',
+    code: 200
+  });
+});
 
 app.listen(5000, function() {
   console.log('Listening on port 5000...')
