@@ -19,6 +19,7 @@
     "uuid": "3.0.1"
   },
   "scripts": {
+    "dev": "concurrently \"react-scripts start\" \"node server/index.js\"",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
