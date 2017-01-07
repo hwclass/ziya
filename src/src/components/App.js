@@ -21,12 +21,12 @@ class App extends Component {
     super();
     this.state = {
       files: [],
-      selectedName: '',
+      selectedFile: {},
       content: '',
     };
 
     this.handleItemClick = this.handleItemClick.bind(this);
-    this.updateCode = this.updateCode.bind(this);
+    this.handleContentChange = this.handleContentChange.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.buildEditorOptions = this.buildEditorOptions.bind(this);
     this.getParentDirectoryContent = this.getParentDirectoryContent.bind(this);
@@ -44,10 +44,10 @@ class App extends Component {
 
   async handleItemClick(item) {
     const { files } = this.state;
-    const { name, type } = item;
+    const { path, name, type } = item;
 
     if (type === 'directory') {
-      const dirContent = await getDirectoryContent(name);
+      const dirContent = await getDirectoryContent(path);
 
       const updatedFiles = files.map(file => file.name === name ? ({
         ...file,
@@ -55,30 +55,29 @@ class App extends Component {
       }) : file);
 
       this.setState({
+        selectedFile: item,
         files: updatedFiles
       });
     } else {
-      const fileContent = await getFileContent(name, type);
+      const fileContent = await getFileContent(path);
 
       this.setState({
-        selectedName: name,
+        selectedFile: item,
         content: fileContent
       });
     }
   }
 
-  updateCode(newCode) {
-    this.setState({
-      content: newCode
-    });
+  handleContentChange(content) {
+    this.setState({ content });
   }
 
   handleKeyDown(event) {
     const charCode = getKeyCode(event);
 
     if (event.metaKey && charCode === 's' && (navigator.platform.match("Mac") ? event.metaKey : event.ctrlKey)) {
-      const { selectedName, content } = this.state;
-      saveFile(selectedName, content);
+      const { selectedFile, content } = this.state;
+      saveFile(selectedFile.path, content);
     }
   }
 
@@ -88,7 +87,7 @@ class App extends Component {
   }
 
   buildEditorOptions() {
-    const extension = this.getExtension(this.state.selectedName);
+    const extension = this.getExtension(this.state.selectedFile.name);
     const fileType = FILE_TYPES[extension];
 
     return {
@@ -98,7 +97,7 @@ class App extends Component {
   }
 
   render() {
-    const { content, files, selectedName } = this.state;
+    const { content, files, selectedFile } = this.state;
 
     return (
       <div className="App">
@@ -109,14 +108,14 @@ class App extends Component {
 
           <Sidebar
             items={files}
-            selectedItem={selectedName}
+            selectedItem={selectedFile.name}
             handleItemClick={this.handleItemClick}
           />
 
           <Content
             value={content}
-            onChange={this.updateCode}
-            options={this.buildEditorOptions()}
+            onChange={this.handleContentChange}
+            options={selectedFile.name && this.buildEditorOptions()}
             onKeyDown={this.handleKeyDown}
           />
         </div>

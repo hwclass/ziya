@@ -1,6 +1,10 @@
 import config from '../constants/config';
 
-async function saveFile(name, content) {
+async function saveFile(path, content) {
+  const encodedPath = encodeURIComponent(path);
+
+  console.log(content);
+
   const requestOptions = {
     method: 'POST',
     headers: {
@@ -11,16 +15,13 @@ async function saveFile(name, content) {
       'Content-Type': 'application/json'
     },
     mode: 'cors',
-    body: JSON.stringify({
-      name,
-      content
-    }),
+    body: JSON.stringify({ content }),
   };
 
   try {
-    const response = await fetch(`${config.serverURL}/content/`, requestOptions);
-    const readedResult = await response.json();
-    return readedResult;
+    const response = await fetch(`${config.serverURL}/files/${encodedPath}`, requestOptions);
+    const json = await response.json();
+    return json;
   } catch (e) {
     console.error('Error occured on saveFile:', e);
   }

@@ -1,7 +1,7 @@
 import config from '../constants/config';
 
-async function getDirectoryContent(name = '') {
-  const encodedName = encodeURIComponent(name);
+async function getDirectoryContent(path = 'root') {
+  const encodedPath = encodeURIComponent(path);
 
   const requestOptions = {
     method: 'GET',
@@ -15,7 +15,7 @@ async function getDirectoryContent(name = '') {
   };
 
   try {
-    const response = await fetch(`${config.serverURL}/content/${encodedName}`, requestOptions);
+    const response = await fetch(`${config.serverURL}/files/${encodedPath}`, requestOptions);
     const json = await response.json();
     return json;
   } catch (e) {

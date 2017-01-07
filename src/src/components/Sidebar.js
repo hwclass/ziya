@@ -52,9 +52,8 @@ class Sidebar extends Component {
 
   getItemListContent(items) {
     return items.map(item => ({
-      name: item.name,
+      ...item,
       children: item.type === 'directory' && (item.children ? this.getItemListContent(item.children) : true),
-      type: item.type,
     }));
   }
 
