@@ -44,15 +44,22 @@ class App extends Component {
 
   async handleItemClick(item) {
     const { files } = this.state;
-    const { path, name, type } = item;
+    const { parentPath, path, type } = item;
 
     if (type === 'directory') {
-      const dirContent = await getDirectoryContent(path);
+      const directoryContent = await getDirectoryContent(path);
 
-      const updatedFiles = files.map(file => file.name === name ? ({
-        ...file,
-        children: dirContent,
-      }) : file);
+      const updateFiles = fileList => fileList.map(file => {
+        if (file.path === path) {
+          return { ...file, children: directoryContent };
+        } else if (file.path === parentPath) {
+          return { ...file, children: updateFiles(file.children) }
+        }
+
+        return file;
+      });
+
+      const updatedFiles = updateFiles(files);
 
       this.setState({
         selectedFile: item,
@@ -115,7 +122,7 @@ class App extends Component {
           <Content
             value={content}
             onChange={this.handleContentChange}
-            options={selectedFile.name && this.buildEditorOptions()}
+            options={selectedFile.name && selectedFile.type === 'file' && this.buildEditorOptions()}
             onKeyDown={this.handleKeyDown}
           />
         </div>

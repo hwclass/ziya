@@ -49,22 +49,24 @@ class Sidebar extends Component {
     return {
       name: 'root',
       toggled: true,
-      children: this.getItemListContent(items, selectedItem),
+      children: this.getItemListContent(items, selectedItem, 'root'),
     };
   }
 
-  getItemListContent(items, selectedItem) {
+  getItemListContent(items, selectedItem, parentPath) {
     return items.map(item => {
       const isSelectedItem = item.path === selectedItem.path && selectedItem.toggled;
       const isParentOfSelectedItem = item.children && item.children.some(child => child.path === selectedItem.path);
+
       const children = item.type === 'directory' && (
-        item.children ? this.getItemListContent(item.children, selectedItem) : []
+        item.children ? this.getItemListContent(item.children, selectedItem, item.path) : []
       );
 
       return {
         ...item,
         toggled: isSelectedItem || isParentOfSelectedItem,
-        children
+        children,
+        parentPath,
       };
     });
   }
