@@ -13,12 +13,15 @@ class Sidebar extends Component {
     super(props);
     this.state = { data: this.formatItemList(props.items) };
     this.onToggle = this.onToggle.bind(this);
+    this.getItemListContent = this.getItemListContent.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!isEqual(nextProps.items, this.props.items)) {
+    const { items, selectedItem } = this.props;
+
+    if (!isEqual(nextProps.items, items) || !isEqual(nextProps.selectedItem, selectedItem)) {
       this.setState({
-        data: this.formatItemList(nextProps.items),
+        data: this.formatItemList(nextProps.items, nextProps.selectedItem),
       });
     }
   }
@@ -42,19 +45,28 @@ class Sidebar extends Component {
     this.setState({ cursor: node });
   }
 
-  formatItemList(items) {
+  formatItemList(items, selectedItem) {
     return {
       name: 'root',
-      toggled: false,
-      children: this.getItemListContent(items),
+      toggled: true,
+      children: this.getItemListContent(items, selectedItem),
     };
   }
 
-  getItemListContent(items) {
-    return items.map(item => ({
-      ...item,
-      children: item.type === 'directory' && (item.children ? this.getItemListContent(item.children) : true),
-    }));
+  getItemListContent(items, selectedItem) {
+    return items.map(item => {
+      const isSelectedItem = item.path === selectedItem.path && selectedItem.toggled;
+      const isParentOfSelectedItem = item.children && item.children.some(child => child.path === selectedItem.path);
+      const children = item.type === 'directory' && (
+        item.children ? this.getItemListContent(item.children, selectedItem) : []
+      );
+
+      return {
+        ...item,
+        toggled: isSelectedItem || isParentOfSelectedItem,
+        children
+      };
+    });
   }
 
   render() {
@@ -72,7 +84,7 @@ class Sidebar extends Component {
 
 Sidebar.propTypes = {
   items: PropTypes.array,
-  selectedItem: PropTypes.string,
+  selectedItem: PropTypes.object,
   handleItemClick: PropTypes.func,
 };
 

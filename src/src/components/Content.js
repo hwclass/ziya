@@ -2,6 +2,7 @@
 import React, { PropTypes } from 'react';
 
 // UI
+import './Content.css';
 import Codemirror from 'react-codemirror';
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/mode/javascript/javascript';
@@ -24,7 +25,7 @@ const Content = ({ value, onKeyDown, onChange, options }) => (
 
 Content.propTypes = {
   value: PropTypes.string,
-  handleKeyDown: PropTypes.func,
+  onKeyDown: PropTypes.func,
   onChange: PropTypes.func,
   options: PropTypes.object,
 };

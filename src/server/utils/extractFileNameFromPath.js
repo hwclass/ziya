@@ -3,6 +3,7 @@
  * @param  {string} path
  * @return {string} fileName
  */
+
 function extractFileNameFromPath(path) {
   const splittedPath = path.split('/');
   return splittedPath[splittedPath.length - 1];

@@ -108,7 +108,7 @@ class App extends Component {
 
           <Sidebar
             items={files}
-            selectedItem={selectedFile.name}
+            selectedItem={selectedFile}
             handleItemClick={this.handleItemClick}
           />
 
