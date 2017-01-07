@@ -38,7 +38,6 @@ function getDirectoryContents(dirPath, items) {
 app.all('*', function(req, res,next) {
   /**
    * Response settings
-   * @type {Object}
    */
   const responseSettings = {
     "AccessControlAllowOrigin": req.headers.origin,
@@ -52,8 +51,8 @@ app.all('*', function(req, res,next) {
    */
   res.header("Access-Control-Allow-Credentials", responseSettings.AccessControlAllowCredentials);
   res.header("Access-Control-Allow-Origin",  responseSettings.AccessControlAllowOrigin);
-  res.header("Access-Control-Allow-Headers", (req.headers['access-control-request-headers']) ? req.headers['access-control-request-headers'] : "x-requested-with");
-  res.header("Access-Control-Allow-Methods", (req.headers['access-control-request-method']) ? req.headers['access-control-request-method'] : responseSettings.AccessControlAllowMethods);
+  res.header("Access-Control-Allow-Headers", req.headers['access-control-request-headers'] || "x-requested-with");
+  res.header("Access-Control-Allow-Methods", req.headers['access-control-request-method'] || responseSettings.AccessControlAllowMethods);
 
   if ('OPTIONS' == req.method) {
     res.sendStatus(200);
@@ -79,25 +78,21 @@ app.get('/sse', function(req, res) {
   });
 });
 
-app.get('/content/:itemName', function (req, res, next) {
-  const filePath = path.join(__dirname, req.params.itemName);
-  const fileStat = fs.statSync(filePath);
+/**
+ * Returns file list of parent directory
+ */
+app.get('/content', function(req, res) {
+  const filePath = path.join(__dirname);
 
-  if (fileStat.isDirectory()) {
-    fs.readdir(filePath, (err, items) => {
-      const files = getDirectoryContents(filePath, items);
-      res.status(200).send(files);
-    });
-  } else {
-    res.writeHead(200, {
-      "Content-Type": "application/octet-stream",
-      "Content-Disposition" : "attachment; filename=" + req.paramsitemName
-    });
-
-    fs.createReadStream(filePath).pipe(res);
-  }
+  fs.readdir(filePath, (err, items) => {
+    const files = getDirectoryContents(filePath, items);
+    res.status(200).send(files);
+  });
 });
 
+/**
+ * Saves content of a file
+ */
 app.post('/content', function (req, res, next) {
   const filePath = path.join(__dirname, req.body.name);
 
@@ -110,6 +105,28 @@ app.post('/content', function (req, res, next) {
     status: 'OK',
     code: 200
   });
+});
+
+/**
+ * Returns content of a directory
+ */
+app.get('/content/:fileName', function (req, res, next) {
+  const filePath = path.join(__dirname, req.params.fileName);
+  const fileStat = fs.statSync(filePath);
+
+  if (fileStat.isDirectory()) {
+    fs.readdir(filePath, (err, items) => {
+      const files = getDirectoryContents(filePath, items);
+      res.status(200).send(files);
+    });
+  } else {
+    res.writeHead(200, {
+      "Content-Type": "application/octet-stream",
+      "Content-Disposition" : "attachment; filename=" + req.paramsfileName
+    });
+
+    fs.createReadStream(filePath).pipe(res);
+  }
 });
 
 app.listen(5000, function() {
