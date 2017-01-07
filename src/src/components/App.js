@@ -6,14 +6,12 @@ import getFileContent from '../utils/getFileContent';
 import getDirectoryContent from '../utils/getDirectoryContent';
 import getKeyCode from '../utils/getKeyCode';
 import overrideKeyDownEvent from '../utils/overrideKeyDownEvent';
+import saveFile from '../utils/saveFile';
 
 // UI
 import './App.css';
 import Sidebar from './Sidebar';
-import Codemirror from 'react-codemirror';
-import 'codemirror/lib/codemirror.css'
-import 'codemirror/mode/javascript/javascript';
-import 'codemirror/mode/markdown/markdown';
+import Content from './Content';
 
 // Constants
 import FILE_TYPES from '../constants/fileTypes';
@@ -77,24 +75,10 @@ class App extends Component {
 
   handleKeyDown(event) {
     const charCode = getKeyCode(event);
-    const self = this;
 
     if (event.metaKey && charCode === 's' && (navigator.platform.match("Mac") ? event.metaKey : event.ctrlKey)) {
-      fetch('http://localhost:5000/content', {
-        method: 'POST',
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Headers': 'Content-Type,x-requested-with,Authorization,Access-Control-Allow-Origin',
-          'Access-Control-Allow-Credentials': 'true',
-          'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE',
-          'Content-Type': 'application/json'
-        },
-        mode: 'cors',
-        body: JSON.stringify({
-          name: self.state.selectedName,
-          content: self.state.content
-        })
-      });
+      const { selectedName, content } = this.state;
+      saveFile(selectedName, content);
     }
   }
 
@@ -114,10 +98,7 @@ class App extends Component {
   }
 
   render() {
-    const { files, selectedName } = this.state;
-    const editorOptions = this.buildEditorOptions();
-
-    console.log(files);
+    const { content, files, selectedName } = this.state;
 
     return (
       <div className="App">
@@ -132,18 +113,12 @@ class App extends Component {
             handleItemClick={this.handleItemClick}
           />
 
-          <div
-            id="Content"
-            className={this.state.content ? '' : 'hidden'}
+          <Content
+            value={content}
+            onChange={this.updateCode}
+            options={this.buildEditorOptions()}
             onKeyDown={this.handleKeyDown}
-          >
-            <Codemirror
-              className="Editor"
-              value={this.state.content}
-              onChange={this.updateCode}
-              options={editorOptions}
-            />
-          </div>
+          />
         </div>
       </div>
     );

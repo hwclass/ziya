@@ -122,13 +122,4 @@ app.get('/content/:fileName', function (req, res, next) {
   } else {
     res.writeHead(200, {
       "Content-Type": "application/octet-stream",
-      "Content-Disposition" : "attachment; filename=" + req.paramsfileName
-    });
-
-    fs.createReadStream(filePath).pipe(res);
-  }
-});
-
-app.listen(5000, function() {
-  console.log('Listening on port 5000...')
-})
+      "Content-Disposition" : "attachment; filename=" + req.paramsf
