@@ -54,17 +54,20 @@ class Sidebar extends Component {
   }
 
   getItemListContent(items, selectedItem, parentPath) {
+    const isParentOfSelectedItem = item => (
+      item.children &&
+      item.children.some(child => child.path === selectedItem.path || isParentOfSelectedItem(child)
+    ));
+
     return items.map(item => {
       const isSelectedItem = item.path === selectedItem.path && selectedItem.toggled;
-      const isParentOfSelectedItem = item.children && item.children.some(child => child.path === selectedItem.path);
-
       const children = item.type === 'directory' && (
         item.children ? this.getItemListContent(item.children, selectedItem, item.path) : []
       );
 
       return {
         ...item,
-        toggled: isSelectedItem || isParentOfSelectedItem,
+        toggled: isSelectedItem || isParentOfSelectedItem(item),
         children,
         parentPath,
       };
