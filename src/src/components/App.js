@@ -13,6 +13,10 @@ import Sidebar from './Sidebar';
 import Codemirror from 'react-codemirror';
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/mode/javascript/javascript';
+import 'codemirror/mode/markdown/markdown';
+
+// Constants
+import FILE_TYPES from '../constants/fileTypes';
 
 class App extends Component {
   constructor() {
@@ -21,43 +25,43 @@ class App extends Component {
       files: [],
       selectedName: '',
       content: '',
-      fileTypes: {
-        js: 'javascript'
-      }
     };
+
     this.handleItemClick = this.handleItemClick.bind(this);
     this.updateCode = this.updateCode.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.buildEditorOptions = this.buildEditorOptions.bind(this);
+    this.getParentDirectoryContent = this.getParentDirectoryContent.bind(this);
   }
 
   componentDidMount() {
-    let self = this;
-      if (!!window.EventSource) {
-        var source = new EventSource('http://localhost:5000/sse/')
-        source.addEventListener('message', (e) => {
-          self.setState({
-            files: JSON.parse(e.data)
-          });
-        }, false)
+    overrideKeyDownEvent();
+    this.getParentDirectoryContent();
+  }
 
-        source.addEventListener('error', (e) => {
-          if (e.readyState === EventSource.CLOSED) {
-            console.log("Ziya was closed")
-          }
-        }, false)
-      }
-
-      overrideKeyDownEvent();
+  async getParentDirectoryContent() {
+    const content = await getDirectoryContent();
+    this.setState({ files: content });
   }
 
   async handleItemClick(item) {
+    const { files } = this.state;
     const { name, type } = item;
 
     if (type === 'directory') {
       const dirContent = await getDirectoryContent(name);
-      console.log('clicked directory content: ', dirContent);
+
+      const updatedFiles = files.map(file => file.name === name ? ({
+        ...file,
+        children: dirContent,
+      }) : file);
+
+      this.setState({
+        files: updatedFiles
+      });
     } else {
       const fileContent = await getFileContent(name, type);
+
       this.setState({
         selectedName: name,
         content: fileContent
@@ -72,8 +76,8 @@ class App extends Component {
   }
 
   handleKeyDown(event) {
-    const charCode = getKeyCode(event),
-        self = this;
+    const charCode = getKeyCode(event);
+    const self = this;
 
     if (event.metaKey && charCode === 's' && (navigator.platform.match("Mac") ? event.metaKey : event.ctrlKey)) {
       fetch('http://localhost:5000/content', {
@@ -99,20 +103,21 @@ class App extends Component {
     return splittedName[splittedName.length - 1];
   }
 
-  getFileType(extension) {
-    return this.state.fileTypes[extension];
-  }
+  buildEditorOptions() {
+    const extension = this.getExtension(this.state.selectedName);
+    const fileType = FILE_TYPES[extension];
 
-  buildEditorOptions(mode, lineNumbers = true) {
     return {
-      mode,
-      lineNumbers
+      mode: fileType,
+      lineNumbers: true,
     };
   }
 
   render() {
     const { files, selectedName } = this.state;
-    const editorOptions = this.buildEditorOptions(this.getFileType(this.getExtension(selectedName)));
+    const editorOptions = this.buildEditorOptions();
+
+    console.log(files);
 
     return (
       <div className="App">
@@ -127,7 +132,11 @@ class App extends Component {
             handleItemClick={this.handleItemClick}
           />
 
-          <div id="Content" className={this.state.content ? '' : 'hidden'} onKeyDown={this.handleKeyDown}>
+          <div
+            id="Content"
+            className={this.state.content ? '' : 'hidden'}
+            onKeyDown={this.handleKeyDown}
+          >
             <Codemirror
               className="Editor"
               value={this.state.content}

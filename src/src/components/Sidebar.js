@@ -8,19 +8,10 @@ import { Treebeard, decorators } from 'react-treebeard';
 // Helpers
 import isEqual from 'lodash.isequal';
 
-// PropTypes
-const propTypes = {
-  items: PropTypes.array,
-  selectedItem: PropTypes.string,
-  handleItemClick: PropTypes.func,
-};
-
 class Sidebar extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      data: this.formatItemList(props.items),
-    };
+    this.state = { data: this.formatItemList(props.items) };
     this.onToggle = this.onToggle.bind(this);
   }
 
@@ -52,17 +43,19 @@ class Sidebar extends Component {
   }
 
   formatItemList(items) {
-    const children = items.map(item => ({
-      name: item.name,
-      children: item.type === 'directory' && [{ name: 'hi! look at to console :)' }],
-      type: item.type,
-    }));
-
     return {
       name: 'root',
       toggled: false,
-      children,
+      children: this.getItemListContent(items),
     };
+  }
+
+  getItemListContent(items) {
+    return items.map(item => ({
+      name: item.name,
+      children: item.type === 'directory' && (item.children ? this.getItemListContent(item.children) : true),
+      type: item.type,
+    }));
   }
 
   render() {
@@ -78,6 +71,10 @@ class Sidebar extends Component {
   }
 }
 
-Sidebar.propTypes = propTypes;
+Sidebar.propTypes = {
+  items: PropTypes.array,
+  selectedItem: PropTypes.string,
+  handleItemClick: PropTypes.func,
+};
 
 export default Sidebar;
