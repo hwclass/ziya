@@ -8,26 +8,20 @@ import { Treebeard, decorators } from 'react-treebeard';
 // Helpers
 import isEqual from 'lodash.isequal';
 
-// PropTypes
-const propTypes = {
-  items: PropTypes.array,
-  selectedItem: PropTypes.string,
-  handleItemClick: PropTypes.func,
-};
-
 class Sidebar extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      data: this.formatItemList(props.items),
-    };
+    this.state = { data: this.formatItemList(props.items) };
     this.onToggle = this.onToggle.bind(this);
+    this.getItemListContent = this.getItemListContent.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!isEqual(nextProps.items, this.props.items)) {
+    const { items, selectedItem } = this.props;
+
+    if (!isEqual(nextProps.items, items) || !isEqual(nextProps.selectedItem, selectedItem)) {
       this.setState({
-        data: this.formatItemList(nextProps.items),
+        data: this.formatItemList(nextProps.items, nextProps.selectedItem),
       });
     }
   }
@@ -51,18 +45,33 @@ class Sidebar extends Component {
     this.setState({ cursor: node });
   }
 
-  formatItemList(items) {
-    const children = items.map(item => ({
-      name: item.name,
-      children: item.type === 'directory' && [{ name: 'hi! look at to console :)' }],
-      type: item.type,
-    }));
-
+  formatItemList(items, selectedItem) {
     return {
       name: 'root',
-      toggled: false,
-      children,
+      toggled: true,
+      children: this.getItemListContent(items, selectedItem, 'root'),
     };
+  }
+
+  getItemListContent(items, selectedItem, parentPath) {
+    const isParentOfSelectedItem = item => (
+      item.children &&
+      item.children.some(child => child.path === selectedItem.path || isParentOfSelectedItem(child)
+    ));
+
+    return items.map(item => {
+      const isSelectedItem = item.path === selectedItem.path && selectedItem.toggled;
+      const children = item.type === 'directory' && (
+        item.children ? this.getItemListContent(item.children, selectedItem, item.path) : []
+      );
+
+      return {
+        ...item,
+        toggled: isSelectedItem || isParentOfSelectedItem(item),
+        children,
+        parentPath,
+      };
+    });
   }
 
   render() {
@@ -78,6 +87,10 @@ class Sidebar extends Component {
   }
 }
 
-Sidebar.propTypes = propTypes;
+Sidebar.propTypes = {
+  items: PropTypes.array,
+  selectedItem: PropTypes.object,
+  handleItemClick: PropTypes.func,
+};
 
 export default Sidebar;

@@ -1,0 +1,11 @@
+#Content {
+  height: 100%;
+  left: 300px;
+  top: 38px;
+  overflow: scroll;
+  position: fixed;
+  background: #DDDDDD;
+  outline: 0px solid transparent;
+  border: 1px solid #ccc;
+  width: 100%;
+}

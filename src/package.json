@@ -3,22 +3,23 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
-    "lodash.isequal": "^4.4.0",
-    "react-scripts": "0.6.1"
+    "lodash.isequal": "4.4.0",
+    "react-scripts": "0.8.4"
   },
   "dependencies": {
-    "body-parser": "^1.15.2",
-    "cors": "^2.8.1",
-    "express": "^4.14.0",
+    "body-parser": "1.15.2",
+    "cors": "2.8.1",
+    "express": "4.14.0",
     "http-string-parser": "0.0.5",
-    "react": "^15.3.2",
-    "react-codemirror": "^0.2.6",
-    "react-dom": "^15.3.2",
-    "react-treebeard": "^1.1.4",
+    "react": "15.4.2",
+    "react-codemirror": "0.3.0",
+    "react-dom": "15.4.2",
+    "react-treebeard": "1.1.4",
     "sse": "0.0.6",
-    "uuid": "^2.0.3"
+    "uuid": "3.0.1"
   },
   "scripts": {
+    "dev": "concurrently \"react-scripts start\" \"node server/index.js\"",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",

@@ -1,8 +1,8 @@
 import config from '../constants/config';
 import Uint8ToString from './Uint8ToString';
 
-async function getFileContent(name) {
-  const encodedName = encodeURIComponent(name);
+async function getFileContent(path) {
+  const encodedPath = encodeURIComponent(path);
 
   const requestOptions = {
     method: 'GET',
@@ -16,7 +16,7 @@ async function getFileContent(name) {
   };
 
   try {
-    const response = await fetch(`${config.serverURL}/content/${encodedName}`, requestOptions);
+    const response = await fetch(`${config.serverURL}/files/${encodedPath}`, requestOptions);
     const readedResult = await response.body.getReader().read();
     const u8 = new Uint8Array(readedResult.value);
     return Uint8ToString(u8);

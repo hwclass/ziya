@@ -6,91 +6,85 @@ import getFileContent from '../utils/getFileContent';
 import getDirectoryContent from '../utils/getDirectoryContent';
 import getKeyCode from '../utils/getKeyCode';
 import overrideKeyDownEvent from '../utils/overrideKeyDownEvent';
+import saveFile from '../utils/saveFile';
 
 // UI
 import './App.css';
 import Sidebar from './Sidebar';
-import Codemirror from 'react-codemirror';
-import 'codemirror/lib/codemirror.css'
-import 'codemirror/mode/javascript/javascript';
+import Content from './Content';
+
+// Constants
+import FILE_TYPES from '../constants/fileTypes';
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
       files: [],
-      selectedName: '',
+      selectedFile: {},
       content: '',
-      fileTypes: {
-        js: 'javascript'
-      }
     };
+
     this.handleItemClick = this.handleItemClick.bind(this);
-    this.updateCode = this.updateCode.bind(this);
+    this.handleContentChange = this.handleContentChange.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.buildEditorOptions = this.buildEditorOptions.bind(this);
+    this.getParentDirectoryContent = this.getParentDirectoryContent.bind(this);
   }
 
   componentDidMount() {
-    let self = this;
-      if (!!window.EventSource) {
-        var source = new EventSource('http://localhost:5000/sse/')
-        source.addEventListener('message', (e) => {
-          self.setState({
-            files: JSON.parse(e.data)
-          });
-        }, false)
+    overrideKeyDownEvent();
+    this.getParentDirectoryContent();
+  }
 
-        source.addEventListener('error', (e) => {
-          if (e.readyState === EventSource.CLOSED) {
-            console.log("Ziya was closed")
-          }
-        }, false)
-      }
-
-      overrideKeyDownEvent();
+  async getParentDirectoryContent() {
+    const content = await getDirectoryContent();
+    this.setState({ files: content });
   }
 
   async handleItemClick(item) {
-    const { name, type } = item;
+    const { files } = this.state;
+    const { parentPath, path, type } = item;
 
     if (type === 'directory') {
-      const dirContent = await getDirectoryContent(name);
-      console.log('clicked directory content: ', dirContent);
-    } else {
-      const fileContent = await getFileContent(name, type);
+      const directoryContent = await getDirectoryContent(path);
+
+      const updateFiles = fileList => fileList.map(file => {
+        if (file.path === path) {
+          return { ...file, children: directoryContent };
+        } else if (file.path === parentPath) {
+          return { ...file, children: updateFiles(file.children) }
+        }
+
+        return file;
+      });
+
+      const updatedFiles = updateFiles(files);
+
       this.setState({
-        selectedName: name,
+        selectedFile: item,
+        files: updatedFiles
+      });
+    } else {
+      const fileContent = await getFileContent(path);
+
+      this.setState({
+        selectedFile: item,
         content: fileContent
       });
     }
   }
 
-  updateCode(newCode) {
-    this.setState({
-      content: newCode
-    });
+  handleContentChange(content) {
+    this.setState({ content });
   }
 
   handleKeyDown(event) {
-    const charCode = getKeyCode(event),
-        self = this;
+    const charCode = getKeyCode(event);
 
     if (event.metaKey && charCode === 's' && (navigator.platform.match("Mac") ? event.metaKey : event.ctrlKey)) {
-      fetch('http://localhost:5000/content', {
-        method: 'POST',
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Headers': 'Content-Type,x-requested-with,Authorization,Access-Control-Allow-Origin',
-          'Access-Control-Allow-Credentials': 'true',
-          'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE',
-          'Content-Type': 'application/json'
-        },
-        mode: 'cors',
-        body: JSON.stringify({
-          name: self.state.selectedName,
-          content: self.state.content
-        })
-      });
+      const { selectedFile, content } = this.state;
+      saveFile(selectedFile.path, content);
     }
   }
 
@@ -99,20 +93,18 @@ class App extends Component {
     return splittedName[splittedName.length - 1];
   }
 
-  getFileType(extension) {
-    return this.state.fileTypes[extension];
-  }
+  buildEditorOptions() {
+    const extension = this.getExtension(this.state.selectedFile.name);
+    const fileType = FILE_TYPES[extension];
 
-  buildEditorOptions(mode, lineNumbers = true) {
     return {
-      mode,
-      lineNumbers
+      mode: fileType,
+      lineNumbers: true,
     };
   }
 
   render() {
-    const { files, selectedName } = this.state;
-    const editorOptions = this.buildEditorOptions(this.getFileType(this.getExtension(selectedName)));
+    const { content, files, selectedFile } = this.state;
 
     return (
       <div className="App">
@@ -123,18 +115,16 @@ class App extends Component {
 
           <Sidebar
             items={files}
-            selectedItem={selectedName}
+            selectedItem={selectedFile}
             handleItemClick={this.handleItemClick}
           />
 
-          <div id="Content" className={this.state.content ? '' : 'hidden'} onKeyDown={this.handleKeyDown}>
-            <Codemirror
-              className="Editor"
-              value={this.state.content}
-              onChange={this.updateCode}
-              options={editorOptions}
-            />
-          </div>
+          <Content
+            value={content}
+            onChange={this.handleContentChange}
+            options={selectedFile.name && selectedFile.type === 'file' && this.buildEditorOptions()}
+            onKeyDown={this.handleKeyDown}
+          />
         </div>
       </div>
     );
