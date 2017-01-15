@@ -5,7 +5,8 @@ const express = require('express'),
   fs = require('fs'),
   bodyParser = require('body-parser'),
   cors = require('cors'),
-  path = require('path');
+  path = require('path'),
+  shell = require("shelljs");
 
 // Constants
 const CONSTANTS = require('./constants');
@@ -81,5 +82,7 @@ app.post('/files/:path', function (req, res, next) {
 });
 
 app.listen(5000, function() {
-  console.log('Listening on port 5000...')
+  console.log('Listening on port 5000...');
+  // start ziya client
+  shell.exec("dir ../ & npm run start");
 });
