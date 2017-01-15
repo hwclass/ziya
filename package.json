@@ -1,6 +1,6 @@
 {
   "name": "ziya",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "description": "Your local in-browser editor",
   "main": "index.js",
   "author": "",
@@ -8,6 +8,17 @@
   "bin": {
     "ziya": "./src/server/index.js"
   },
-  "dependencies": {},
+  "dependencies": {
+    "body-parser": "1.15.2",
+    "cors": "2.8.1",
+    "express": "4.14.0",
+    "http-string-parser": "0.0.5",
+    "react": "15.4.2",
+    "react-codemirror": "0.3.0",
+    "react-dom": "15.4.2",
+    "react-treebeard": "1.1.4",
+    "sse": "0.0.6",
+    "uuid": "3.0.1"
+  },
   "preferGlobal": "true"
 }
