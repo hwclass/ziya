@@ -23,3 +23,4 @@ function getDirectoryContents(dirPath, items) {
 }
 
 module.exports = getDirectoryContents;
+

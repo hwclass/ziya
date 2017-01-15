@@ -1,6 +1,6 @@
 {
   "name": "ziya",
-  "version": "0.6.5",
+  "version": "0.8.7",
   "description": "Your local in-browser editor",
   "main": "index.js",
   "scripts": {

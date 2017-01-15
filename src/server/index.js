@@ -7,6 +7,9 @@ const express = require('express'),
   cors = require('cors'),
   path = require('path');
 
+// Constants
+const CONSTANTS = require('./constants');
+
 // Helper Functions
 const getDirectoryContents = require('./utils/getDirectoryContents');
 const extractFileNameFromPath = require('./utils/extractFileNameFromPath');
@@ -15,7 +18,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const corsOptions = {
-  origin: 'http://localhost:5000',
+  origin: CONSTANTS.SERVER_URL,
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
