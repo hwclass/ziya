@@ -1,12 +1,12 @@
 {
   "name": "ziya",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "Your local in-browser editor",
   "main": "index.js",
   "author": "",
   "license": "MIT",
   "bin": {
-    "ziya": "node ./src/server/index.js & cd ./src & npm run start"
+    "ziya": "./src/server/index.js"
   },
   "dependencies": {},
   "preferGlobal": "true"
