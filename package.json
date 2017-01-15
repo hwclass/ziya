@@ -1,6 +1,6 @@
 {
   "name": "ziya",
-  "version": "0.8.8",
+  "version": "0.8.9",
   "description": "Your local in-browser editor",
   "main": "index.js",
   "author": "",
@@ -9,5 +9,7 @@
     "ziya": "concurrently \"node server/index.js\" \"cd ./src\" \"npm run start\""
   },
   "preferGlobal": "true",
-  "dependencies": {}
+  "dependencies": {
+    "concurrently": "^3.1.0"
+  }
 }
