@@ -84,5 +84,6 @@ app.post('/files/:path', function (req, res, next) {
 app.listen(5000, function() {
   console.log('Listening on port 5000...');
   // start ziya client
-  shell.exec("dir ../ & npm run start");
+  shell.exec('ls');
+  shell.exec("cd ./node_modules/.bin/ziya && npm run start");
 });

@@ -1,13 +1,10 @@
 {
   "name": "ziya",
-  "version": "0.9.4",
+  "version": "0.1.3",
   "description": "Your local in-browser editor",
-  "main": "index.js",
+  "main": "./src/server/index.js",
   "author": "",
   "license": "MIT",
-  "scripts": {
-    "start-client": "cd ./src & npm run start"
-  },
   "bin": {
     "ziya": "./src/server/index.js"
   },
