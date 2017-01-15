@@ -1,15 +1,12 @@
 {
   "name": "ziya",
-  "version": "0.8.7",
+  "version": "0.8.8",
   "description": "Your local in-browser editor",
   "main": "index.js",
-  "scripts": {
-    "start-client": "./src/npm start"
-  },
   "author": "",
   "license": "MIT",
   "bin": {
-    "ziya": "./src/server.js"
+    "ziya": "concurrently \"node server/index.js\" \"cd ./src\" \"npm run start\""
   },
   "preferGlobal": "true",
   "dependencies": {}
