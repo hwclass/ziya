@@ -15,8 +15,10 @@
     "react-codemirror": "0.3.0",
     "react-dom": "15.4.2",
     "react-treebeard": "1.1.4",
+    "shelljs": "0.7.6",
     "sse": "0.0.6",
-    "uuid": "3.0.1"
+    "uuid": "3.0.1",
+    "webpack": "^1.14.0"
   },
   "scripts": {
     "dev": "concurrently \"react-scripts start\" \"node server/index.js\"",

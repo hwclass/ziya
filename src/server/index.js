@@ -7,6 +7,9 @@ const express = require('express'),
   cors = require('cors'),
   path = require('path');
 
+// Constants
+const CONSTANTS = require('./constants');
+
 // Helper Functions
 const getDirectoryContents = require('./utils/getDirectoryContents');
 const extractFileNameFromPath = require('./utils/extractFileNameFromPath');
@@ -15,29 +18,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const corsOptions = {
-  origin: 'http://localhost:5000',
+  origin: CONSTANTS.SERVER_URL,
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
-
-app.all('*', function(req, res,next) {
-  const responseSettings = {
-    "AccessControlAllowOrigin": req.headers.origin,
-    "AccessControlAllowHeaders": "Content-Type, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5,  Date, X-Api-Version, X-File-Name",
-    "AccessControlAllowMethods": "POST, GET, PUT, DELETE, OPTIONS",
-    "AccessControlAllowCredentials": true
-  };
-
-  res.header("Access-Control-Allow-Credentials", responseSettings.AccessControlAllowCredentials);
-  res.header("Access-Control-Allow-Origin",  responseSettings.AccessControlAllowOrigin);
-  res.header("Access-Control-Allow-Headers", req.headers['access-control-request-headers'] || "x-requested-with");
-  res.header("Access-Control-Allow-Methods", req.headers['access-control-request-method'] || responseSettings.AccessControlAllowMethods);
-
-  if ('OPTIONS' == req.method) {
-    res.sendStatus(200);
-  } else {
-    next();
-  }
-});
 
 /**
  * Reads content of a file
@@ -72,11 +55,19 @@ app.post('/files/:path', function (req, res, next) {
     if (err) {
       return res.status(422).send(err);
     }
-
     res.status(200).send({ status: 'OK' });
   });
 });
 
+// Set static file location
+app.use('/static', express.static(path.join(__dirname, CONSTANTS.STATIC_FILES_DIR)));
+
+// Serve built index.html with assets dependencies
+app.get('*', function response(req, res) {
+  res.sendFile(path.join(__dirname, CONSTANTS.VIEW_ENTRY_FILE));
+});
+
+// Start server
 app.listen(5000, function() {
-  console.log('Listening on port 5000...')
+  console.log('Listening on port 5000...');
 });
