@@ -6,7 +6,8 @@ const express = require('express'),
   bodyParser = require('body-parser'),
   cors = require('cors'),
   path = require('path'),
-  shell = require("shelljs");
+  shell = require("shelljs"),
+  webpack = require('webpack');
 
 // Constants
 const CONSTANTS = require('./constants');
@@ -23,6 +24,7 @@ const corsOptions = {
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
+/*
 app.all('*', function(req, res,next) {
   const responseSettings = {
     "AccessControlAllowOrigin": req.headers.origin,
@@ -42,6 +44,7 @@ app.all('*', function(req, res,next) {
     next();
   }
 });
+*/
 
 /**
  * Reads content of a file
@@ -76,14 +79,27 @@ app.post('/files/:path', function (req, res, next) {
     if (err) {
       return res.status(422).send(err);
     }
-
     res.status(200).send({ status: 'OK' });
   });
 });
 
+/*
 app.listen(5000, function() {
   console.log('Listening on port 5000...');
   // start ziya client
   shell.exec('ls');
   shell.exec("cd ./node_modules/.bin/ziya && npm run start");
+});
+*/
+
+//app.use(express.static(path.join(__dirname, '../build/assets')));
+//static/js/main.f4a26dfa.js
+app.use('/static', express.static(path.join(__dirname, '../build/static')));
+
+app.get('*', function response(req, res) {
+  res.sendFile(path.join(__dirname, '../build/index.html'));
+});
+
+app.listen(5000, function() {
+  console.log('Listening on port 5000...');
 });
