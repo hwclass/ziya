@@ -5,9 +5,7 @@ const express = require('express'),
   fs = require('fs'),
   bodyParser = require('body-parser'),
   cors = require('cors'),
-  path = require('path'),
-  shell = require("shelljs"),
-  webpack = require('webpack');
+  path = require('path');
 
 // Constants
 const CONSTANTS = require('./constants');
@@ -23,28 +21,6 @@ const corsOptions = {
   origin: CONSTANTS.SERVER_URL,
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
-
-/*
-app.all('*', function(req, res,next) {
-  const responseSettings = {
-    "AccessControlAllowOrigin": req.headers.origin,
-    "AccessControlAllowHeaders": "Content-Type, X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5,  Date, X-Api-Version, X-File-Name",
-    "AccessControlAllowMethods": "POST, GET, PUT, DELETE, OPTIONS",
-    "AccessControlAllowCredentials": true
-  };
-
-  res.header("Access-Control-Allow-Credentials", responseSettings.AccessControlAllowCredentials);
-  res.header("Access-Control-Allow-Origin",  responseSettings.AccessControlAllowOrigin);
-  res.header("Access-Control-Allow-Headers", req.headers['access-control-request-headers'] || "x-requested-with");
-  res.header("Access-Control-Allow-Methods", req.headers['access-control-request-method'] || responseSettings.AccessControlAllowMethods);
-
-  if ('OPTIONS' == req.method) {
-    res.sendStatus(200);
-  } else {
-    next();
-  }
-});
-*/
 
 /**
  * Reads content of a file
@@ -83,23 +59,15 @@ app.post('/files/:path', function (req, res, next) {
   });
 });
 
-/*
-app.listen(5000, function() {
-  console.log('Listening on port 5000...');
-  // start ziya client
-  shell.exec('ls');
-  shell.exec("cd ./node_modules/.bin/ziya && npm run start");
-});
-*/
+// Set static file location
+app.use('/static', express.static(path.join(__dirname, CONSTANTS.STATIC_FILES_DIR)));
 
-//app.use(express.static(path.join(__dirname, '../build/assets')));
-//static/js/main.f4a26dfa.js
-app.use('/static', express.static(path.join(__dirname, '../build/static')));
-
+// Serve built index.html with assets dependencies
 app.get('*', function response(req, res) {
-  res.sendFile(path.join(__dirname, '../build/index.html'));
+  res.sendFile(path.join(__dirname, CONSTANTS.VIEW_ENTRY_FILE));
 });
 
+// Start server
 app.listen(5000, function() {
   console.log('Listening on port 5000...');
 });
