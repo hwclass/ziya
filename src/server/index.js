@@ -8,6 +8,7 @@ const express = require('express'),
   path = require('path');
 
 // Constants
+const env = process.env.NODE_ENV;
 const CONSTANTS = require('./constants');
 
 // Helper Functions
@@ -59,13 +60,39 @@ app.post('/files/:path', function (req, res, next) {
   });
 });
 
-// Set static file location
-app.use('/static', express.static(path.join(__dirname, CONSTANTS.STATIC_FILES_DIR)));
+if (env === 'production') {
+  // Set static file location
+  app.use('/static', express.static(path.join(__dirname, CONSTANTS.STATIC_FILES_DIR)));
 
-// Serve built index.html with assets dependencies
-app.get('*', function response(req, res) {
-  res.sendFile(path.join(__dirname, CONSTANTS.VIEW_ENTRY_FILE));
-});
+  // Serve built index.html with assets dependencies
+  app.get('*', function response(req, res) {
+    res.sendFile(path.join(__dirname, CONSTANTS.VIEW_ENTRY_FILE));
+  });
+} else {
+  // Add webpack dev-hot middlewares
+  const webpack = require('webpack'),
+    webpackDevMiddleware = require('webpack-dev-middleware'),
+    webpackHotMiddleware = require('webpack-hot-middleware');
+    webpackConfig = require('../config/webpack.dev.js');
+
+  const compiler = webpack(webpackConfig);
+
+  const middleware = webpackDevMiddleware(compiler, {
+    publicPath: webpackConfig.output.publicPath,
+    stats: {
+      colors: true,
+    },
+    noInfo: true,
+    hot: true,
+    inline: true,
+    lazy: false,
+    historyApiFallback: true,
+    quiet: true,
+  });
+
+  app.use(middleware);
+  app.use(webpackHotMiddleware(compiler));
+}
 
 // Start server
 app.listen(5000, function() {
