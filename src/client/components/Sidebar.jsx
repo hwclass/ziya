@@ -2,8 +2,8 @@
 import React, { Component, PropTypes } from 'react';
 
 // UI
-import './Sidebar.css';
 import { Treebeard, decorators } from 'react-treebeard';
+import './Sidebar.css';
 
 // Helpers
 import isEqual from 'lodash.isequal';
@@ -45,21 +45,13 @@ class Sidebar extends Component {
     this.setState({ cursor: node });
   }
 
-  formatItemList(items, selectedItem) {
-    return {
-      name: 'root',
-      toggled: true,
-      children: this.getItemListContent(items, selectedItem, 'root'),
-    };
-  }
-
   getItemListContent(items, selectedItem, parentPath) {
     const isParentOfSelectedItem = item => (
       item.children &&
-      item.children.some(child => child.path === selectedItem.path || isParentOfSelectedItem(child)
+      item.children.some(child => child.path === selectedItem.path || isParentOfSelectedItem(child),
     ));
 
-    return items.map(item => {
+    return items.map((item) => {
       const isSelectedItem = item.path === selectedItem.path && selectedItem.toggled;
       const children = item.type === 'directory' && (
         item.children ? this.getItemListContent(item.children, selectedItem, item.path) : []
@@ -72,6 +64,14 @@ class Sidebar extends Component {
         parentPath,
       };
     });
+  }
+
+  formatItemList(items, selectedItem) {
+    return {
+      name: 'root',
+      toggled: true,
+      children: this.getItemListContent(items, selectedItem, 'root'),
+    };
   }
 
   render() {
@@ -88,9 +88,13 @@ class Sidebar extends Component {
 }
 
 Sidebar.propTypes = {
-  items: PropTypes.array,
+  items: PropTypes.array.isRequired,
   selectedItem: PropTypes.object,
-  handleItemClick: PropTypes.func,
+  handleItemClick: PropTypes.func.isRequired,
+};
+
+Sidebar.defaultProps = {
+  selectedItem: {},
 };
 
 export default Sidebar;

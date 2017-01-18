@@ -1,11 +1,10 @@
 #!/usr/bin/env node
+const express = require('express');
+const fs = require('fs');
+const bodyParser = require('body-parser');
+const path = require('path');
 
-const express = require('express'),
-  app = express(),
-  fs = require('fs'),
-  bodyParser = require('body-parser'),
-  cors = require('cors'),
-  path = require('path');
+const app = express();
 
 // Constants
 const env = process.env.NODE_ENV;
@@ -18,15 +17,10 @@ const extractFileNameFromPath = require('./utils/extractFileNameFromPath');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const corsOptions = {
-  origin: CONSTANTS.SERVER_URL,
-  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-};
-
 /**
  * Reads content of a file
  */
-app.get('/files/:path', function (req, res, next) {
+app.get('/files/:path', (req, res) => {
   const filePath = path.join(req.params.path === 'root' ? process.cwd() : req.params.path);
   const fileName = extractFileNameFromPath(req.params.path);
   const fileStat = fs.statSync(filePath);
@@ -38,8 +32,8 @@ app.get('/files/:path', function (req, res, next) {
     });
   } else {
     res.writeHead(200, {
-      "Content-Type": "application/octet-stream",
-      "Content-Disposition" : "attachment; filename=" + fileName
+      'Content-Type': 'application/octet-stream',
+      'Content-Disposition': `attachment; filename=${fileName}`,
     });
 
     fs.createReadStream(filePath).pipe(res);
@@ -49,14 +43,15 @@ app.get('/files/:path', function (req, res, next) {
 /**
  * Saves content of a file
  */
-app.post('/files/:path', function (req, res, next) {
+app.post('/files/:path', (req, res) => {
   const filePath = path.join(req.params.path);
 
-  fs.writeFile(filePath, req.body.content, { encoding: 'utf8' }, function(err) {
+  fs.writeFile(filePath, req.body.content, { encoding: 'utf8' }, (err) => {
     if (err) {
       return res.status(422).send(err);
     }
-    res.status(200).send({ status: 'OK' });
+
+    return res.status(200).send({ status: 'OK' });
   });
 });
 
@@ -65,15 +60,15 @@ if (env === 'production') {
   app.use('/static', express.static(path.join(__dirname, CONSTANTS.STATIC_FILES_DIR)));
 
   // Serve built index.html with assets dependencies
-  app.get('*', function response(req, res) {
+  app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, CONSTANTS.VIEW_ENTRY_FILE));
   });
 } else {
   // Add webpack dev-hot middlewares
-  const webpack = require('webpack'),
-    webpackDevMiddleware = require('webpack-dev-middleware'),
-    webpackHotMiddleware = require('webpack-hot-middleware');
-    webpackConfig = require('../config/webpack.dev.js');
+  const webpack = require('webpack');
+  const webpackDevMiddleware = require('webpack-dev-middleware');
+  const webpackHotMiddleware = require('webpack-hot-middleware');
+  const webpackConfig = require('../config/webpack.dev.js');
 
   const compiler = webpack(webpackConfig);
 
@@ -82,12 +77,10 @@ if (env === 'production') {
     stats: {
       colors: true,
     },
-    noInfo: true,
     hot: true,
     inline: true,
     lazy: false,
     historyApiFallback: true,
-    quiet: true,
   });
 
   app.use(middleware);
@@ -95,6 +88,6 @@ if (env === 'production') {
 }
 
 // Start server
-app.listen(5000, function() {
+app.listen(5000, () => {
   console.log('Listening on port 5000...');
 });

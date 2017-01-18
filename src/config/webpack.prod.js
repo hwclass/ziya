@@ -13,7 +13,7 @@ module.exports = merge({}, baseConfig, {
 
   entry: {
     main: [
-      './src/index.js',
+      './client/index.jsx',
     ],
     vendor: [
       'babel-polyfill',

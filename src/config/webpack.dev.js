@@ -1,7 +1,6 @@
 const webpack = require('webpack');
 const merge = require('lodash.merge');
 
-const config = require('./');
 const baseConfig = require('./webpack.base');
 
 module.exports = merge({}, baseConfig, {
@@ -13,7 +12,7 @@ module.exports = merge({}, baseConfig, {
       'react-hot-loader/patch',
       'babel-polyfill',
       'whatwg-fetch',
-      './src/index.js',
+      './client/index.jsx',
     ],
   },
 

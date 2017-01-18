@@ -9,9 +9,9 @@ async function getDirectoryContent(path = 'root') {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Headers': 'Content-Type, x-requested-with, Authorization, Access-Control-Allow-Origin',
       'Access-Control-Allow-Credentials': 'true',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
-    mode: 'cors'
+    mode: 'cors',
   };
 
   try {
@@ -20,6 +20,7 @@ async function getDirectoryContent(path = 'root') {
     return json;
   } catch (e) {
     console.error('Error occured on getFileContent:', e);
+    return e;
   }
 }
 

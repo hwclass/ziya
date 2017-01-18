@@ -3,8 +3,6 @@
  *
  * @param {object} event
 */
-const getKeyCode = (event) => {
-  return String.fromCharCode(event.which).toLowerCase();
-};
+const getKeyCode = event => String.fromCharCode(event.which).toLowerCase();
 
 export default getKeyCode;

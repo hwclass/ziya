@@ -33,8 +33,6 @@ class App extends Component {
   }
 
   componentDidMount() {
-    console.log('A');
-
     overrideKeyDownEvent();
     this.getParentDirectoryContent();
   }
@@ -44,6 +42,11 @@ class App extends Component {
     this.setState({ files: content });
   }
 
+  getExtension = (fileName) => {
+    const splittedName = fileName.split('.');
+    return splittedName[splittedName.length - 1];
+  }
+
   async handleItemClick(item) {
     const { files } = this.state;
     const { parentPath, path, type } = item;
@@ -51,11 +54,11 @@ class App extends Component {
     if (type === 'directory') {
       const directoryContent = await getDirectoryContent(path);
 
-      const updateFiles = fileList => fileList.map(file => {
+      const updateFiles = fileList => fileList.map((file) => {
         if (file.path === path) {
           return { ...file, children: directoryContent };
         } else if (file.path === parentPath) {
-          return { ...file, children: updateFiles(file.children) }
+          return { ...file, children: updateFiles(file.children) };
         }
 
         return file;
@@ -65,14 +68,14 @@ class App extends Component {
 
       this.setState({
         selectedFile: item,
-        files: updatedFiles
+        files: updatedFiles,
       });
     } else {
       const fileContent = await getFileContent(path);
 
       this.setState({
         selectedFile: item,
-        content: fileContent
+        content: fileContent,
       });
     }
   }
@@ -84,25 +87,26 @@ class App extends Component {
   handleKeyDown(event) {
     const charCode = getKeyCode(event);
 
-    if (event.metaKey && charCode === 's' && (navigator.platform.match("Mac") ? event.metaKey : event.ctrlKey)) {
+    if (event.metaKey && charCode === 's' && (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey)) {
       const { selectedFile, content } = this.state;
       saveFile(selectedFile.path, content);
     }
   }
 
-  getExtension(fileName) {
-    const splittedName = fileName.split('.');
-    return splittedName[splittedName.length - 1];
-  }
-
   buildEditorOptions() {
-    const extension = this.getExtension(this.state.selectedFile.name);
-    const fileType = FILE_TYPES[extension];
+    const { selectedFile } = this.state;
 
-    return {
-      mode: fileType,
-      lineNumbers: true,
-    };
+    if (selectedFile.name && selectedFile.type) {
+      const extension = this.getExtension(selectedFile.name);
+      const fileType = FILE_TYPES[extension];
+
+      return {
+        mode: fileType,
+        lineNumbers: true,
+      };
+    }
+
+    return {};
   }
 
   render() {
@@ -124,7 +128,7 @@ class App extends Component {
           <Content
             value={content}
             onChange={this.handleContentChange}
-            options={selectedFile.name && selectedFile.type === 'file' && this.buildEditorOptions()}
+            options={this.buildEditorOptions()}
             onKeyDown={this.handleKeyDown}
           />
         </div>

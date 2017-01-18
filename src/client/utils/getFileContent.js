@@ -1,30 +1,29 @@
 import config from '../constants/config';
+import Uint8ToString from './Uint8ToString';
 
-async function saveFile(path, content) {
+async function getFileContent(path) {
   const encodedPath = encodeURIComponent(path);
 
-  console.log(content);
-
   const requestOptions = {
-    method: 'POST',
+    method: 'GET',
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Headers': 'Content-Type,x-requested-with,Authorization,Access-Control-Allow-Origin',
       'Access-Control-Allow-Credentials': 'true',
-      'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
     mode: 'cors',
-    body: JSON.stringify({ content }),
   };
 
   try {
     const response = await fetch(`${config.serverURL}/files/${encodedPath}`, requestOptions);
-    const json = await response.json();
-    return json;
+    const readedResult = await response.body.getReader().read();
+    const u8 = new Uint8Array(readedResult.value);
+    return Uint8ToString(u8);
   } catch (e) {
-    console.error('Error occured on saveFile:', e);
+    console.error('Error occured on getFileContent:', e);
+    return e;
   }
 }
 
-export default saveFile;
+export default getFileContent;

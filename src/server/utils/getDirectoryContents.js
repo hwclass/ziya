@@ -9,10 +9,12 @@ const path = require('path');
 const fs = require('fs');
 
 function getDirectoryContents(dirPath, items) {
-  return items.map((item, index) => {
+  return items.map((item) => {
     const filePath = path.join(dirPath, item);
     const fileStat = fs.statSync(filePath);
-    const fileType = (fileStat.isDirectory() && 'directory') || (fileStat.isFile() && 'file') || 'unknown';
+    const fileType = (fileStat.isDirectory() && 'directory') ||
+      (fileStat.isFile() && 'file') ||
+      'unknown';
 
     return {
       name: item,
