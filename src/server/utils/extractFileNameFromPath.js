@@ -10,5 +10,3 @@ function extractFileNameFromPath(path) {
 }
 
 module.exports = extractFileNameFromPath;
-
-
