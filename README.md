@@ -10,7 +10,7 @@ Your local in-browser editor
 $ git clone git@github.com:hwclass/ziya.git
 
 # Go to source folder
-$ cd ziya/src/src
+$ cd ziya/src/
 
 # Install Dependencies
 $ npm install
