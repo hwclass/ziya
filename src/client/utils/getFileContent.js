@@ -1,5 +1,4 @@
 import config from '../constants/config';
-// import Uint8ToString from './Uint8ToString';
 
 async function getFileContent(path) {
   const encodedPath = encodeURIComponent(path);
