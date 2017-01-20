@@ -1,6 +1,8 @@
 # ziya
 Your local in-browser editor
 
+[![npm](https://img.shields.io/npm/dm/ziya.svg)](https://www.npmjs.com/package/ziya)
+
 ![Şener Şen](http://i68.tinypic.com/e3gqe.jpg)
 
 ## Developer Quickstart
