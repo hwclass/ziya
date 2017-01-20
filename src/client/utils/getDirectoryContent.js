@@ -19,7 +19,9 @@ async function getDirectoryContent(path = 'root') {
     const json = await response.json();
     return json;
   } catch (e) {
+    /* eslint-disable */
     console.error('Error occured on getFileContent:', e);
+    /* eslint-enable */
     return e;
   }
 }
