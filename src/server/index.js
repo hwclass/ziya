@@ -26,17 +26,17 @@ app.get('/files/:path', (req, res) => {
   const fileStat = fs.statSync(filePath);
 
   if (fileStat.isDirectory()) {
-    fs.readdir(filePath, (err, items) => {
+    fs.readdir(filePath, { encoding: 'utf8' }, (err, items) => {
       const files = getDirectoryContents(filePath, items);
       res.status(200).send(files);
     });
   } else {
     res.writeHead(200, {
-      'Content-Type': 'application/octet-stream',
+      'Content-Type': 'application/octet-stream; charset=utf-8',
       'Content-Disposition': `attachment; filename=${fileName}`,
     });
 
-    fs.createReadStream(filePath).pipe(res);
+    fs.createReadStream(filePath, 'utf8').pipe(res);
   }
 });
 
@@ -89,5 +89,5 @@ if (env === 'production') {
 
 // Start server
 app.listen(5000, () => {
-  console.log('Listening on port 5000...');
+  console.log('ziya is now working on port %s ...', process.env.PORT || 5000);
 });
