@@ -12,9 +12,11 @@ import saveFile from '../utils/saveFile';
 import './App.css';
 import Sidebar from './Sidebar';
 import Content from './Content';
+import { Notification } from 'react-notification';
 
 // Constants
 import FILE_TYPES from '../constants/fileTypes';
+import NOTIFICATIONS from '../constants/notifications';
 
 class App extends Component {
   constructor() {
@@ -23,6 +25,8 @@ class App extends Component {
       files: [],
       selectedFile: {},
       content: '',
+      isNotificationActive: false,
+      notificationAction: NOTIFICATIONS.saved,
     };
 
     this.handleItemClick = this.handleItemClick.bind(this);
@@ -30,6 +34,7 @@ class App extends Component {
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.buildEditorOptions = this.buildEditorOptions.bind(this);
     this.getParentDirectoryContent = this.getParentDirectoryContent.bind(this);
+    this.toggleNotification = this.toggleNotification.bind(this);
   }
 
   componentDidMount() {
@@ -50,6 +55,8 @@ class App extends Component {
   async handleItemClick(item) {
     const { files } = this.state;
     const { parentPath, path, type } = item;
+
+    this.setState({ isNotificationActive: false });
 
     if (type === 'directory') {
       const directoryContent = await getDirectoryContent(path);
@@ -84,12 +91,16 @@ class App extends Component {
     this.setState({ content });
   }
 
-  handleKeyDown(event) {
+  async handleKeyDown(event) {
     const charCode = getKeyCode(event);
 
     if (event.metaKey && charCode === 's' && (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey)) {
       const { selectedFile, content } = this.state;
-      saveFile(selectedFile.path, content);
+      await saveFile(selectedFile.path, content);
+      this.setState({
+        isNotificationActive: true,
+        notificationAction: NOTIFICATIONS.saved,
+      });
     }
   }
 
@@ -107,6 +118,10 @@ class App extends Component {
     }
 
     return {};
+  }
+
+  toggleNotification() {
+    this.setState({ isNotificationActive: false });
   }
 
   render() {
@@ -130,6 +145,15 @@ class App extends Component {
             onChange={this.handleContentChange}
             options={this.buildEditorOptions()}
             onKeyDown={this.handleKeyDown}
+          />
+
+          <Notification
+            isActive={this.state.isNotificationActive}
+            message={this.state.notificationAction}
+            title={this.state.selectedFile.path}
+            onClick={() => this.setState({ isNotificationActive: false })}
+            onDismiss={() => this.toggleNotification()}
+            dismissAfter={3000}
           />
         </div>
       </div>

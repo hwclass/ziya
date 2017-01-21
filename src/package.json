@@ -46,8 +46,8 @@
     "react": "15.4.2",
     "react-codemirror": "0.3.0",
     "react-dom": "15.4.2",
+    "react-notification": "^6.6.0",
     "react-treebeard": "1.1.4",
-    "shelljs": "0.7.6",
     "sse": "0.0.6",
     "uuid": "3.0.1"
   },
