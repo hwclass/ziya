@@ -17,9 +17,8 @@ async function getFileContent(path) {
 
   try {
     const response = await fetch(`${config.serverURL}/files/${encodedPath}`, requestOptions);
-    const readedResult = await response.body.getReader().read();
-    const utf8Decoder = new TextDecoder('utf-8');
-    return utf8Decoder.decode(new Uint8Array(readedResult.value));
+    const json = await response.json();
+    return json;
   } catch (e) {
     /* eslint-disable */
     console.error('Error occured on getFileContent:', e);

@@ -31,12 +31,9 @@ app.get('/files/:path', (req, res) => {
       res.status(200).send(files);
     });
   } else {
-    res.writeHead(200, {
-      'Content-Type': 'application/octet-stream; charset=utf-8',
-      'Content-Disposition': `attachment; filename=${fileName}`,
+    fs.readFile(filePath, 'utf8', (err, response) => {
+      res.status(200).send(JSON.stringify(response));
     });
-
-    fs.createReadStream(filePath, 'utf8').pipe(res);
   }
 });
 

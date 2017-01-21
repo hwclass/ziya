@@ -107,7 +107,7 @@ class App extends Component {
   buildEditorOptions() {
     const { selectedFile } = this.state;
 
-    if (selectedFile.name && selectedFile.type) {
+    if (selectedFile.name && selectedFile.type && selectedFile.type !== 'directory') {
       const extension = this.getExtension(selectedFile.name);
       const fileType = FILE_TYPES[extension];
 
