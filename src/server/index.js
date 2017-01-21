@@ -3,11 +3,14 @@ const express = require('express');
 const fs = require('fs');
 const bodyParser = require('body-parser');
 const path = require('path');
+const open = require('open');
 
 const app = express();
 
 // Constants
-const env = process.env.NODE_ENV;
+const ENV = process.env.NODE_ENV;
+const PORT = process.env.PORT || 5000;
+const HOST = process.env.HOST || 'localhost';
 const CONSTANTS = require('./constants');
 
 // Helper Functions
@@ -52,7 +55,7 @@ app.post('/files/:path', (req, res) => {
   });
 });
 
-if (env === 'production') {
+if (ENV === 'production') {
   // Set static file location
   app.use('/static', express.static(path.join(__dirname, CONSTANTS.STATIC_FILES_DIR)));
 
@@ -85,6 +88,7 @@ if (env === 'production') {
 }
 
 // Start server
-app.listen(5000, () => {
-  console.log('ziya is now working on port %s ...', process.env.PORT || 5000);
+app.listen(PORT, () => {
+  console.log('ziya is now working on port %s ...', PORT);
+  open(`http://${HOST}:${PORT}`);
 });
