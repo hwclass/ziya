@@ -5,6 +5,8 @@
 
 ![Şener Şen](http://i68.tinypic.com/e3gqe.jpg)
 
+<img src="http://giphy.com/embed/l0ExhO2TBvAI1ANGw" width="100%"/>
+
 ## Developer Quickstart
 ```bash
 
@@ -34,7 +36,7 @@ Coming soon.
 ### Change Log
 
 This project adheres to [Semantic Versioning](http://semver.org/).  
-Every release, along with the migration instructions, is documented on the [Github](https://www.github.com/hwclass/ziya/CHANGELOG.md).
+Every release, along with the migration instructions, is documented on [changelog](https://www.github.com/hwclass/ziya/CHANGELOG.md).
 
 ### Contributors
 
