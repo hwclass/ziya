@@ -7,6 +7,17 @@
 
 <img src="http://giphy.com/embed/l0ExhO2TBvAI1ANGw" width="100%"/>
 
+## User Quickstart
+```bash
+# Install ziya as global
+$ npm install ziya -g
+
+# Run ziya
+$ ziya
+
+# See what happens in the browser in the address: localhost:5000
+```
+
 ## Developer Quickstart
 ```bash
 
