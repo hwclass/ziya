@@ -1,21 +1,20 @@
 #!/usr/bin/env node
-const express = require('express');
 const fs = require('fs');
-const bodyParser = require('body-parser');
 const path = require('path');
+const bodyParser = require('body-parser');
+const express = require('express');
 const open = require('open');
 
 const app = express();
 
 // Constants
-const ENV = process.env.NODE_ENV;
+const ENV = process.env.NODE_ENV || 'production';
 const PORT = process.env.PORT || 5000;
 const HOST = process.env.HOST || 'localhost';
 const CONSTANTS = require('./constants');
 
 // Helper Functions
 const getDirectoryContents = require('./utils/getDirectoryContents');
-const extractFileNameFromPath = require('./utils/extractFileNameFromPath');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -25,7 +24,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
  */
 app.get('/files/:path', (req, res) => {
   const filePath = path.join(req.params.path === 'root' ? process.cwd() : req.params.path);
-  const fileName = extractFileNameFromPath(req.params.path);
   const fileStat = fs.statSync(filePath);
 
   if (fileStat.isDirectory()) {

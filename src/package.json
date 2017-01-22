@@ -29,6 +29,11 @@
     "lodash.merge": "4.6.0",
     "postcss-loader": "1.2.2",
     "progress-bar-webpack-plugin": "1.9.2",
+    "react": "15.4.2",
+    "react-codemirror": "0.3.0",
+    "react-dom": "15.4.2",
+    "react-notification": "^6.6.0",
+    "react-treebeard": "1.1.4",
     "react-hot-loader": "3.0.0-beta.6",
     "rimraf": "2.5.4",
     "source-map-loader": "0.1.6",
@@ -40,23 +45,14 @@
   },
   "dependencies": {
     "body-parser": "1.15.2",
-    "cors": "2.8.1",
     "express": "4.14.0",
-    "http-string-parser": "0.0.5",
-    "open": "0.0.5",
-    "react": "15.4.2",
-    "react-codemirror": "0.3.0",
-    "react-dom": "15.4.2",
-    "react-notification": "^6.6.0",
-    "react-treebeard": "1.1.4",
-    "sse": "0.0.6",
-    "uuid": "3.0.1"
+    "open": "0.0.5"
   },
   "scripts": {
     "prebuild": "rimraf build",
     "build": "NODE_ENV=production webpack --config config/webpack.prod.js",
     "start:dev": "NODE_ENV=development node server/index.js",
-    "start:prod": "NODE_ENV=production node server/index.js"
+    "start:prod": "node server/index.js"
   },
   "babel": {
     "presets": [
