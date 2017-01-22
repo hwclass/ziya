@@ -5,7 +5,7 @@
 
 ![Şener Şen](http://i68.tinypic.com/e3gqe.jpg)
 
-<img src="http://giphy.com/embed/l0ExhO2TBvAI1ANGw" width="100%"/>
+<img src="https://media.giphy.com/media/l0ExhO2TBvAI1ANGw/giphy.gif" width="100%"/>
 
 ## Developer Quickstart
 ```bash
