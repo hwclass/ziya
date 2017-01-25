@@ -94,7 +94,7 @@ class App extends Component {
   async handleKeyDown(event) {
     const charCode = getKeyCode(event);
 
-    if (event.metaKey && charCode === 's' && (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey)) {
+    if (charCode === 's' && (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey)) {
       const { selectedFile, content } = this.state;
       await saveFile(selectedFile.path, content);
       this.setState({
