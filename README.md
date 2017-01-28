@@ -44,6 +44,10 @@ $ npm run start:prod
 
 Coming soon.
 
+### Design
+
+Designers wanted!
+
 ### Change Log
 
 This project adheres to [Semantic Versioning](http://semver.org/).  

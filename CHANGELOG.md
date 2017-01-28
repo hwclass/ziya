@@ -7,3 +7,6 @@
 - Non-English character support
 - Integrate ESLint
 
+#### **1.1.9**
+- Save with CTRL + S on Windows OS
+
