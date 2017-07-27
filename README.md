@@ -1,6 +1,7 @@
 # ziya
 :pencil2: Your local in-browser editor
 
+[![BCH compliance](https://bettercodehub.com/edge/badge/hwclass/ziya?branch=master)](https://bettercodehub.com/)
 [![npm](https://img.shields.io/npm/dm/ziya.svg)](https://www.npmjs.com/package/ziya)
 
 ![Şener Şen](http://i68.tinypic.com/e3gqe.jpg)
